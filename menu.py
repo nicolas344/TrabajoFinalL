@@ -67,7 +67,4 @@ class Menu:
                 break
             else:
                 print("Elección no válida. Inténtelo nuevamente.")
-if __name__ == "__main__":
-    menu = Menu()
-    menu.display_initial_menu()
 
