@@ -7,7 +7,10 @@ class Login:
         self.listGroups = []
 
     def findUserById(self, user_id, list_users):
-        return next((user for user in list_users if user.userID == user_id), None)
+        for user in list_users:
+            if user.userID == user_id:
+                return user
+        return None
 
     def findGroupById(self, group_id, list_groups):
         for group in list_groups:
