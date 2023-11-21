@@ -1,11 +1,9 @@
 import random
 import datetime
 from Debt import Debt
-from SaveGroups import SaveGroup
-
+from SaveGroup import SaveGroup
 
 class User:
-
     def __init__(self, name, surname, userID, password, saveGroups=None, balance=random.randint(0, 1000000)):
         self.name = name
         self.surname = surname
@@ -34,10 +32,10 @@ class User:
             print("Monto: ", transaction["amount"])
             print("Saldo antes de la transacción: ", transaction["balanceBefore"])
             print("Saldo despues de la transacción: ", transaction["balanceAfter"])
-            print("-" * 20)
+            print("-"*20)
             print("\n")
 
-    def printUserGroups(self, list_groups):
+    def printGroups(self, list_groups):
         print("-" * 20)
         print("Grupos de ahorro:")
         for group in list_groups:
@@ -67,7 +65,7 @@ class User:
 
     def depositMoneyInGroup(self, login_instance):
         print("Depositar dinero en grupo de ahorro:")
-        self.printUserGroups(self.saveGroups)
+        self.printGroups(self.saveGroups)
         group_id = int(input("Ingrese el ID del grupo en el que desea depositar (o '0' para salir): "))
 
         if group_id == 0:
@@ -80,11 +78,11 @@ class User:
             if amount > self.balance:
                 print("No tienes suficiente dinero para realizar el depósito.")
             else:
-                amountWcomission = amount - amount * 0.001
+                amountWcomission = amount-amount*0.001
                 self.balance -= amountWcomission
                 selected_group.balanceGroup += amountWcomission
                 selected_group.investments[self.userID] += amountWcomission
-                print(f"Se han depositado {amount}  al grupo de ahorro {selected_group.idGroup}.")
+                print(f"Se han depositado {amountWcomission}  al grupo de ahorro {selected_group.idGroup}.")
                 print(f"Nuevo saldo personal: {self.balance}")
                 print(
                     f"Se ha invertido en el grupo por el usuario {self.userID}: {selected_group.investments[self.userID]}")
@@ -125,7 +123,7 @@ class User:
 
     def askGroupLoan(self, login_instance):
         print("Solicitar prestamo del grupo de ahorro: ")
-        self.printUserGroups(self.saveGroups)
+        self.printGroups(self.saveGroups)
         group_id = int(input("Ingrese el ID del grupo al que desea solicitar el prestamo (o q para salir): "))
         if group_id == 0:
             return
@@ -139,7 +137,7 @@ class User:
                 print("El monto del depósito no puede superar la inversión total del usuario en este grupo.")
                 print("O el prestamo solicitado ha superado el monto que guarda el grupo")
                 return
-            amountWComission = amountD - amountD * 0.001
+            amountWComission = amountD-amountD*0.001
             debt_name = input("Ingrese como quiere nombrar esta deuda")
             term_to_pay = int(input("Ingrese en cuantos meses desea pagar (max: 2)"))
             if term_to_pay > 2:
@@ -172,7 +170,7 @@ class User:
         print("Solicitar prestamo a un grupo de ahorro externo: ")
         IDcurrentGroup = int(input("Ingrese el id del grupo desde el cual quiere pedir el prestamo: "))
         print("Estos son los grupos que estan disponibles en el sistema")
-        self.printUserGroups(login_instance.listGroups)
+        self.printGroups(login_instance.listGroups)
         IDtargetGroup = int(input("Elige a cual quieres pedirle el prestamo: "))
 
         current_group = login_instance.findGroupById(IDcurrentGroup, self.saveGroups)
@@ -188,7 +186,7 @@ class User:
                     print("El monto del depósito no puede superar la inversión total del usuario en este grupo.")
                     print("O el prestamo solicitado ha superado el monto que guarda el grupo")
                     return
-                EDamountWComission = EDamount - EDamount * 0.001
+                EDamountWComission = EDamount-EDamount*0.001
                 EDtermToPay = int(input("Ingrese en cuantos meses desea pagar (max:2)"))
                 if EDtermToPay > 2:
                     print("El plazo de pago no puede ser superior a 2 meses. Se establecerá en 2 meses.")
@@ -201,8 +199,7 @@ class User:
                 else:
                     EDinterestRate = 0.05
 
-                debt_instance = Debt(name=EDname, amount=EDamountWComission, interest=EDinterestRate,
-                                     termToPay=EDtermToPay)
+                debt_instance = Debt(name=EDname, amount=EDamountWComission, interest=EDinterestRate, termToPay=EDtermToPay)
                 self.debtsList.append(debt_instance)
                 self.balance += EDamountWComission
                 target_group.balanceGroup -= EDamountWComission
@@ -237,7 +234,7 @@ class User:
                 return
 
             selected_debt = self.debtsList[selected_index]
-            monthly_installment = selected_debt.calculate_monthly_installment() + selected_debt.interest
+            monthly_installment = selected_debt.calculate_monthly_installment()
             MIwComission = monthly_installment - monthly_installment * 0.001
             print(f"La cuota mensual para la deuda {selected_debt.name} es de {MIwComission}.")
 
@@ -273,7 +270,6 @@ class User:
 
         except (ValueError, IndexError):
             print("Selección no válida. Inténtelo nuevamente.")
-
     def dissolveSaveGroup(self, login_instance):
         group_id = int(input("Ingrese el ID del grupo que desea disolver: "))
         selected_group = login_instance.findGroupById(group_id, login_instance.listGroups)
@@ -293,8 +289,7 @@ class User:
             print(f"Saldo total distribuido a los usuarios: {final_balance}")
             print("Saldo individual de los usuarios después de la disolución:")
             for user in selected_group.usersGroup:
-                print(f"{user.name}")
-
+                print(f"{user.name} y el saldo es: {user.balance}")
             login_instance.listGroups.remove(selected_group)
         elif selected_group:
             print(f"El saldo del grupo de ahorro {selected_group.nameGroup} es cero. No se puede disolver.")
