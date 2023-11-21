@@ -1,7 +1,7 @@
 import random
 import datetime
 from Debt import Debt
-from SaveGroup import SaveGroup
+from SaveGroups import SaveGroup
 
 class User:
     def __init__(self, name, surname, userID, password, saveGroups=None, balance=random.randint(0, 1000000)):
