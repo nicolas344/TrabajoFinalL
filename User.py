@@ -47,7 +47,7 @@ class User:
             print("-" * 20)
 
     def createSaveGroup(self, login_instance):
-        if len(self.saveGroups) < 2:
+        if len(self.saveGroups) < 3:
             group_id = random.randint(100000, 999999)
             group_balance = 0
             group_name = input("Ingrese el nombre del grupo: ")
